@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    environment {
+	IMAGE_NAME = "my-app"
+	CONTAINER_NAME = "test-${BUILD_NUMBER}"
+    }
+
+    stages {
+	stage('checkout') {
+            steps {
+		checkout scm
+	    }
+	}
+	stage('Build Docker Image') {
+            steps {
+		sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'
+	    }
+  	}
+	stage('Run & Health Check') {
+	    steps {
+		sh '''
+		    docker run -d --name $CONTAINER_NAME -p 3010:3000 $IMAGE_NAME:$BUILD_NUMBER
+		    sleep 3
+		    curl -f http://localhost3010/health
+		'''
+	    }
+	}
+	stage('Cleanup') {
+	    steps {
+		sh '''
+		    docker rm -f $CONTAINER_NAME || true
+		    docker image prune -f
+		'''
+	    }
+	}
+    }
+    post {
+       always {
+	   sh ' docker rm -f $CONTAINER_NAME || true'
+	   echo "Pipeline finished: ${currentBuils.currentResult}"
+      }
+   }
+}

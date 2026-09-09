@@ -22,7 +22,7 @@ pipeline {
 		sh '''
 		    docker run -d --name $CONTAINER_NAME -p 3010:3000 $IMAGE_NAME:$BUILD_NUMBER
 		    sleep 3
-		    curl -f http://localhost3010/health
+		    curl -f http://localhost:3010/health
 		'''
 	    }
 	}
@@ -38,7 +38,7 @@ pipeline {
     post {
        always {
 	   sh ' docker rm -f $CONTAINER_NAME || true'
-	   echo "Pipeline finished: ${currentBuils.currentResult}"
+	   echo "Pipeline finished: ${currentBuild.currentResult}"
       }
    }
 }

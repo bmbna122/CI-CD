@@ -21,6 +21,11 @@ pipeline {
                 sh 'docker run --rm $IMAGE_NAME:$BUILD_NUMBER echo "tests would run here"'
             }
         }
+	stage('Cleanup') {
+	    steps {
+		sh 'docker image prune -f'
+	    }
+	}
     }
     post {
         always {

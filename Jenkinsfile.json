@@ -20,7 +20,11 @@ pipeline {
 	stage('Run & Health Check') {
 	    steps {
 		sh '''
-		    docker run -d --name $CONTAINER_NAME -p 3010:3000 $IMAGE_NAME:$BUILD_NUMBER --add-host=host.docker.internal:host-gateway
+		    docker run -d \
+		    	--name $CONTAINER_NAME \
+			--add-host=host.docker.internal:host-gateway \
+		       	-p 3010:3000 \
+			$IMAGE_NAME:$BUILD_NUMBER
 		    sleep 3
 		    curl -f http://host.docker.internal:3010/health
 		'''

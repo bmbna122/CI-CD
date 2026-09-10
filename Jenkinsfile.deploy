@@ -14,7 +14,7 @@ pipeline {
 	}
 	stage('Build Docker Image') {
             steps {
-		sh 'docker build -t $IMAGE_NAME:$BUILD_NUMBER .'
+		sh 'docker build -f Dockerfile.deploy -t $IMAGE_NAME:$BUILD_NUMBER .'
 	    }
   	}
 	stage('Run & Health Check') {

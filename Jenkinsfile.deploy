@@ -23,7 +23,8 @@ pipeline {
 		    docker run -d  --name $CONTAINER_NAME \
 		      --network jenkins-lab_default \
 		      $IMAGE_NAME:$BUILD_NUMBER
-		    sleep 3
+		    sleep 8
+		    docker logs $CONTAINER_NAME
 		    docker exec $CONTAINER_NAME wget -qO- http://$CONTAINER_NAME:3000/health
 		'''
 	    }
